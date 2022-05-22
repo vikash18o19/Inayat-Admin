@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Admin</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400|Roboto:300,400,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
+    <link rel="stylesheet" href="assets/css/Black-Navbar.css">
+    <link rel="stylesheet" href="assets/css/Grid-and-List-view-V10-1.css">
+    <link rel="stylesheet" href="assets/css/Grid-and-List-view-V10.css">
+    <link rel="stylesheet" href="assets/css/Responsive-Form.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+
+
+    <div class="container mt">
+        <table class="Table">
+            <thead>
+                <th>S.No. </th>
+                <th>CONTENT </th>
+                <th>CREATOR </th>
+                <th>CATEGORY </th>
+                <th>PRICE </th>
+            </thead>>
+            <tbody id="tbody1"></tbody>
+        </table>
+
+    </div>
+
+
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/Grid-and-List-view-V10.js"></script>
+    <script type="module">
+        var contNo=0;
+        var tbody = document.getElementById('tbody1');
+
+        function AddItemToTable(content,creator,category,price){
+            let trow = document.createElement("tr");
+            let td1 = document.createElement("td");
+            let td2 = document.createElement("td");
+            let td3 = document.createElement("td");
+            let td4 = document.createElement("td");
+            let td5 = document.createElement("td");
+
+            td1.innerHTML=++contNo;
+            td2.innerHTML=content;
+            td3.innerHTML=creator;
+            td4.innerHTML=category;
+            td5.innerHTML=price;
+
+            trow.appendChild(td1);
+            trow.appendChild(td2);
+            trow.appendChild(td3);
+            trow.appendChild(td4);
+            trow.appendChild(td5);
+            tbody.appendChild(trow);
+
+        }
+
+        function AddAllItemsToTable(content){
+            tbody.innerHTML="";
+            content.forEach(element => {
+                AddItemToTable(element.contentName,element.contentCreator, element.category, element.price);
+            })
+        }
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDr47pbikNwJGQxiKmbSnM7QgMJOv3W130",
+            authDomain: "inayat-backend.firebaseapp.com",
+            databaseURL: "https://inayat-backend-default-rtdb.firebaseio.com",
+            projectId: "inayat-backend",
+            storageBucket: "inayat-backend.appspot.com",
+            messagingSenderId: "248131097417",
+            appId: "1:248131097417:web:ac2066b2578b7eefa20098",
+            measurementId: "G-QK3T4RQR8Q"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        import {getDatabase, ref, child, get}
+        from "https://www.gstatic.com/firebasejs/9.8.1/firebase-database.js"
+
+        const db = getDatabase();
+
+
+        function GetAllDataOnce(){
+            const dbRef = ref(db);
+
+            get(child(dbRef,"content")).then((snapshot)=>{
+                var cont=[];
+                snapshot.forEach(childSnapshot=>{
+                    cont.push(childSnapshot.val());
+                })
+                AddAllItemsToTable(cont)
+            })
+
+
+        }
+
+        window.onload=GetAllDataOnce;
+        
+    </script>
+</body>
+
+</html>
